@@ -3,6 +3,7 @@ media
 dist
 static
 node_modules
+**/__pycache__
 
 
 .vscode/*
