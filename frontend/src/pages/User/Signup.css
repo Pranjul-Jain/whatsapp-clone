@@ -56,6 +56,45 @@
     display:none;
 }
 
+.input-block{
+    position:relative;
+    width:100%;    
+}
+
+.form-control{
+    width:100%;
+}
+
+.error-message{
+    display: none;
+    position:absolute;
+    left:113%;
+    top:0;
+    padding:0.8rem;
+    border-radius: 0.5rem;
+    background-color:rgb(141, 44, 62);
+    color:white;
+    width:max-content;
+    max-width: 100%;
+    display: none;
+    font-size: 0.8rem;
+    transition: all 500ms ease-in;
+}
+
+.error-message::after{
+    position:absolute;
+    content:"";
+    height:0;
+    width:0;
+    top:0.8rem;
+    left:-0.8rem;
+    border-left:10px solid transparent;
+    border-right:10px solid transparent;
+    border-top:15px solid rgb(141, 44, 62);
+    border-bottom:0;
+    transform: rotate(90deg);
+}
+
 .login-form label{
     display: grid;
     background-color: rgb(8, 61, 41);

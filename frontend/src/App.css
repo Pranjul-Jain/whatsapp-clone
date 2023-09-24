@@ -9,7 +9,7 @@
 
 .whatsapp-gridbox{
   display: grid;
-  grid-template-columns:1.5fr 2fr;
+  grid-template-columns:1.2fr 2fr;
   width:100%;
   place-items: center;
 }
@@ -204,7 +204,7 @@
 
 .known-user-card{
   display:grid;
-  grid-template-columns: 0.17fr 1fr;
+  grid-template-columns: 0.1fr 1fr;
   place-items: normal;
   width:100%;
   padding:0.6em 1em;
@@ -219,12 +219,13 @@
   aspect-ratio: 4/4.2;
   object-fit: cover;
   object-position: top center;
-
 }
 
 .known-user-card .user-info{
   line-height: 1.5em;
   position: relative;
+  margin-top: auto;
+  margin-left: 1rem;
 }
 
 .known-user-card .user-info::after{
@@ -249,7 +250,7 @@
   background-color: rgb(64, 83, 95);
   margin:auto;
   border-radius: 50%;
-  margin-right: 1.2rem;
+  /* margin-right: 1.2rem; */
 }
 
 .known-user-card[aria-selected="true"]{
@@ -281,6 +282,9 @@
   font-weight: 300;
 }
 
+.known-user-card .message{
+  color:rgba(245, 245, 245, 0.523);
+}
 
 /*------------------Add-meber-sectin-start---------------------------*/
 
@@ -371,7 +375,8 @@
 
 .messages-section{
   display: none;
-  grid-template-rows:0.25fr 2fr 0.25fr;
+  /* grid-template-rows:3.8rem 2fr 4rem; */
+  flex-direction: column;
   height: 100vh;
   width:100%;
   position: relative;
@@ -380,18 +385,24 @@
 }
 
 .d-grid{
-  display: grid;
+  display: flex;
 }
 
 .navbar{
   display: flex;
   flex-direction: row;
-  height: max-content;
+  height: 3.8rem;
   overflow: hidden;
   padding:0.32em 1em;
   background-color: #202c33;
   border:none;
   cursor:pointer;
+}
+
+.navbar .fa-user{
+  padding:1rem;
+  background-color: rgb(64, 83, 95);
+  border-radius: 50%;
 }
 
 .navbar .user-image{
@@ -407,7 +418,7 @@
 .message-display{
   display: flex;
   width:100%;
-  height:100%;
+  flex-grow:1;
   align-items: flex-start;
   background-image: url(./assets/images/goku.png);
   background-size: cover;
@@ -527,7 +538,7 @@
   flex-direction: row;
   padding:0.5em 0;
   width:100%;
-  height:100%;
+  height:auto;
   overflow: hidden;
   background-color: #202c33;
   cursor:pointer;
@@ -543,15 +554,17 @@
 */
 
 .chatbox-input{
+  position: relative;
   width:80%;
-  height: 100%;
+  height: 50px;
+  max-height: 8rem;
+  min-height: 2rem;
   font-family: sans-serif;
   padding-left: 1.2em;
   font-size: 0.9rem;
   word-spacing: 0;
-  line-height: 1.5em;
-  resize: none;
-  
+  text-align:justify;
+  resize: none; 
 }
 
 .chatbox-input::-webkit-scrollbar{
@@ -575,12 +588,12 @@
 /*  Emoji section   */
 
 .emoji-background{
-  display: none;
+  display: grid;
   position: relative;
   background-color: rgb(20, 27, 29);
   width:100%;
-  height: 100%;
-  transition: all 1s linear;
+  opacity: 0;
+  height: 0;
 }
 
 .emoji-nav{

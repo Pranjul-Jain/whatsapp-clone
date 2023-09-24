@@ -4,7 +4,7 @@ dist
 static
 node_modules
 **/__pycache__
-
+*/__pycache__
 
 .vscode/*
 !.vscode/extensions.json

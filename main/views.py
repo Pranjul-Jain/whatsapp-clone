@@ -85,15 +85,19 @@ def createConnection(request):
     if receiver:
         receiver = receiver[0]
         try:
+            user = Connection.objects.mongo_find({"user_id":ObjectId(user_id),"receiver_id":ObjectId(receiver._id)})
+
+            if user.count()>0:
+                return Response({"message":"user already exists"})
+            
             name = name if name else number
             sender = User.objects.get(_id=ObjectId(user_id))
-            connection = Connection(name=name,user_id=sender,receiver_id=receiver,messages=[])
-            connection.save()
 
-            connection = Connection(name=sender.number,user_id=receiver,receiver_id=sender,messages=[])
-            connection.save()
+            Connection.objects.mongo_insert({"name":name,"user_id":ObjectId(user_id),"receiver_id":receiver._id,"messages":[]})
+            
+            connection_id = Connection.objects.mongo_insert({"name":sender.number,"user_id":receiver._id,"receiver_id":ObjectId(user_id),"messages":[]})
 
-            return Response({"message":"user added","_id":str(connection._id)})
+            return Response({"message":"user added","_id":str(connection_id)})
         except Exception as e:
             print(e)
             return Response({"message":"creation failed"})
@@ -102,7 +106,7 @@ def createConnection(request):
 
 def Getusers(request,user_id):
     print(user_id)
-    all_users = list(Connection.objects.filter(user_id=ObjectId(user_id)).values("receiver_id_id__upload_image","messages","receiver_id_id","name"))
+    all_users = list(Connection.objects.filter(user_id=ObjectId(user_id)).values("receiver_id__upload_image","messages","receiver_id","name"))
     all_groups = [dict(entry) for entry in Group.objects.mongo_aggregate([{
         "$match":{
             "members.user_id":user_id
@@ -122,7 +126,7 @@ def Getusers(request,user_id):
         group['_id'] = str(group["_id"])
 
     for users in all_users:
-        users["receiver_id_id"] = str(users["receiver_id_id"])
+        users["receiver_id"] = str(users["receiver_id"])
 
     if not all_groups:
         all_groups = []

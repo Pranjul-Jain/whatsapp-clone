@@ -18,11 +18,12 @@ class Messages(models.Model):
 
 class Connection(models.Model):
     _id = models.ObjectIdField()
-    user_id = models.ForeignKey(User,models.CASCADE,related_name="user_id")
+    user = models.ForeignKey(User,models.CASCADE,related_name="user_id")
     name = models.CharField(max_length=200,null=False,blank=False)
-    receiver_id = models.ForeignKey(User,models.CASCADE,related_name="receiver_id")
+    receiver = models.ForeignKey(User,models.CASCADE,related_name="receiver_id")
     message_timestamp = models.DateField(default=datetime.now)
     messages = models.ArrayField(model_container=Messages)
+    objects = models.DjongoManager()
 
 class MemberDetails(models.Model):
     _id = models.CharField(max_length=30,primary_key=True,default=uuid.uuid4().hex)

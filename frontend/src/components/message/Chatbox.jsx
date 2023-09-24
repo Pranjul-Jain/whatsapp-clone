@@ -27,27 +27,24 @@ const Chatbox = ({
     }
   },[chatsocket])
 
-  const chatheight = useRef(0.25);
-
   useEffect(()=>{
     emojiState==="open"
     ?document.querySelector("#chatbox-smiley").style.color="rgb(32, 153, 113)"
     :document.querySelector("#chatbox-smiley").style.color="rgba(155, 152, 152, 0.685)"
 
-    const messageSection = document.querySelector(".messages-section"+(props.className?"."+props.className:props.className))
-    const gridrowsvalue =  emojiState==="close"?`0.25fr 2fr ${chatheight.current}fr`:`0.25fr 0.8fr 1.2fr ${chatheight.current}fr`
-
-    if(messageSection){
-     messageSection.style.gridTemplateRows = gridrowsvalue
-    }
-
   },[emojiState])
 
+  useEffect(()=>{
+    const chatboxInput = document.querySelector(".chatbox-input");
+    if(chatboxInput){
+      chatboxInput.style.height = "auto";
+      chatboxInput.style.height = "40"+"px";
+    }
+  },[])
 
-  const newLine = useRef(0);
   return (
     <div className="chatbox">
-        {emojiState==="open"?<i className="fa-solid fa-xmark" onClick={()=>setEmojiState("close")}></i>:""}
+        {emojiState==="open"?<i className="fa-solid fa-xmark" style={{transition:"all 0.2s ease-in-out"}} onClick={()=>setEmojiState("close")}></i>:""}
         <i className="fa-solid fa-face-grin-wide" id="chatbox-smiley" onClick={()=>{emojiState==="close"?setEmojiState("open"):null}}></i>
         <i className="fa-sharp fa-solid fa-paperclip"></i>
         <textarea ref={chatboxRef} autoComplete="off" className="chatbox-input" name="message" type="text" placeholder='Type a message' onKeyDown={handleKey} />
@@ -61,35 +58,26 @@ const Chatbox = ({
         "message":message.trim(),
         "sender_id":props.user_id
       }))
-      newLine.current = 0;
-      chatheight.current = 0.25;
-      const gridrowsvalue =  emojiState==="close"?`0.25fr 2fr ${chatheight.current}fr`:`0.25fr 0.8fr 1.2fr ${chatheight.current}fr`
-      document.querySelector(".messages-section.d-grid").style.gridTemplateRows = gridrowsvalue
     }
   }
 
   function handleKey(event){
+    const chatboxInput = document.querySelector(".chatbox-input");
+
     if(event.keyCode === 13 && !event.shiftKey){
       sendMessage(event.target.value)
       event.target.value = "";
+      chatboxInput.style.height = "auto";
+      chatboxInput.style.height =  "40"+"px";
     }
-    else if(event.keyCode === 13 && event.shiftKey){
-       newLine.current += 1
-       if(newLine.current <= 4){
-        chatheight.current += 0.1
-        const gridrowsvalue =  emojiState==="close"?`0.25fr 2fr ${chatheight.current}fr`:`0.25fr 0.8fr 1.2fr ${chatheight.current}fr`
-        document.querySelector(".messages-section.d-grid").style.gridTemplateRows = gridrowsvalue
-       }
-    }else if(event.keyCode === 8 && newLine.current>=1 && event.target.value.at(-1)==='\n'){
-      if(newLine.current <=4){
-        chatheight.current -= 0.1
-        newLine.current -= 1
-        const gridrowsvalue =  emojiState==="close"?`0.25fr 2fr ${chatheight.current}fr`:`0.25fr 0.8fr 1.2fr ${chatheight.current}fr`
-        document.querySelector(".messages-section.d-grid").style.gridTemplateRows = gridrowsvalue
+    else{
+      chatboxInput.style.height = "auto";
+      if (chatboxInput.scrollHeight > 57) {
+          chatboxInput.style.height = chatboxInput.scrollHeight + "px";
       }else{
-        newLine.current -= 1
+          chatboxInput.style.height =  "40"+"px";
       }
-    } 
+    }
   }
 }
 

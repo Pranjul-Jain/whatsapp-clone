@@ -49,7 +49,7 @@ const AddMembers = ({
                             display = "d-none";
                         }
 
-                        return <GroupUserCard selectedCards={selectedCards} id={"group-user-card-"+(index)} display={display} card_index={index} setSelectedCards={setSelectedCards} name={data.name} receiver_id={data.receiver_id_id} key={"group-user-card-key-"+(index)} imageurl={null} image={data.receiver_id_id__upload_image}/>
+                        return <GroupUserCard selectedCards={selectedCards} id={"group-user-card-"+(index)} display={display} card_index={index} setSelectedCards={setSelectedCards} name={data.name} receiver_id={data.receiver_id} key={"group-user-card-key-"+(index)} imageurl={null} image={data.receiver_id__upload_image}/>
                     }
                 })
             }

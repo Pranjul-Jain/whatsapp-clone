@@ -21,13 +21,18 @@ const KnownUserCard = (props) => {
           signal:controller.signal
         }
       }).then(res=>{
+        
         const base64Image = btoa(
           new Uint8Array(res.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
             ''
           )
         );
-        imageUrl.current.src = `data:${res.headers['content-type']};base64,${base64Image}`;
+
+        if(base64Image)
+        imageUrl.current.src =  `data:${res.headers['content-type']};base64,${base64Image}`
+        else
+        imageUrl.current.src = props.imageurl;
       }).catch(err=>console.log(err))
   
     }

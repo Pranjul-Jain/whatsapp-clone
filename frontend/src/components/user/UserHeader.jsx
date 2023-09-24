@@ -32,7 +32,12 @@ const UserHeader = ({
             ''
           )
         );
+        
+        if(res.data.byteLength)
         userImage.current.src =  `data:${res.headers['content-type']};base64,${base64Image}`
+        else
+        userImage.current.src = myImg;
+
       }).catch(err=>console.log(err))
   
     }

@@ -1,4 +1,5 @@
 import "./Signup.css"
+import Input from "../../components/user/Input"
 import React,{useRef,useEffect} from 'react'
 import {Link,useNavigate} from "react-router-dom"
 import axios from "axios"
@@ -10,10 +11,14 @@ const Signup = ({
   setAuthenticated
 }) => {
   const responseMessage = useRef("");
+  const username_err  = useRef();
+  const number_err = useRef();
+  const password_err = useRef();
+  const copassword_err = useRef();
   const navigate = useNavigate();
 
   useEffect(()=>{
-    const controller = new AbortController()
+    const controller = new AbortController();
     const getAuthenticateData = async ()=> {
      const response =  await axios.get(import.meta.env.VITE_SERVER_URL + "/authenticate/",{signal:controller.signal}).then(res=> res).catch(err=>err)
      const data = await response.data;
@@ -38,14 +43,14 @@ const Signup = ({
         <div className="frame">
             <form className="login-form" method="POST" action="/user" onSubmit={signup}>
                 <h1>Sign up</h1>
-                <input type="text" name="username" id="username" placeholder='Enter your username' required />
-                <input type="text" name="number" id="number" placeholder='Enter Your Phone Number' required />
+                <Input className="input-block" inputClassName="form-control" type="text" name="username" id="username" errorMessage="error-message" placeholder='Enter your username' required={true} errorref={username_err} />
+                <Input className="input-block" inputClassName="form-control" type="text" name="number" id="number" errorMessage="error-message" placeholder='Enter your phone number' required={true} errorref={number_err} />
                 <div className="file-input">
                     <label htmlFor="user-image" id="user-image-label">Upload your image</label>
                     <input type="file" name="user-image" id="user-image" accept="image/*" onChangeCapture={changeColor} placeholder="Upload Your Image" />
                 </div>
-                <input type="password" name="password" id="password" placeholder="Enter Your password" required />
-                <input type="password" name="co-password" id="co-password" placeholder="Enter your password again" required />
+                <Input className="input-block" inputClassName="form-control" type="password" name="password" id="password" errorMessage="error-message" placeholder='Enter your password' required={true} errorref={password_err} />
+                <Input className="input-block" inputClassName="form-control" type="password" name="co-password" id="co-password" errorMessage="error-message" placeholder='Confirm your password' required={true} errorref={copassword_err} />
                 <div className="button-block">
                   <Link className="btn-link" to="/login">Already Signup?</Link>
                   <button type="submit" className="btn-log">Register</button>
@@ -58,28 +63,70 @@ const Signup = ({
 
   async function signup(event){
     event.preventDefault()
-    
-    const response = await axios.post(import.meta.env.VITE_SERVER_URL + "/register",{
-      username : event.target.username.value,
-      number : event.target.number.value,
-      "user-files" : event.target['user-image'].files[0],
-      "password" : event.target.password.value
-    },{
-      headers : {
-        'Content-Type': 'multipart/form-data'
+    if(checkFormData(event)){
+      const response = await axios.post(import.meta.env.VITE_SERVER_URL + "/register",{
+        username : event.target.username.value,
+        number : event.target.number.value,
+        "user-files" : event.target['user-image'].files[0],
+        "password" : event.target.password.value
+      },{
+        headers : {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res=>res).catch(err=>console.log(err))
+      
+      if(response.status === 200){
+        const data = await response.data;
+        responseMessage.current.innerText = data.message;
+        responseMessage.current.style.display = "block";
+      }else if(response.status === 201){
+        const data = await response.data;
+        responseMessage.current.innerText = data.message;
+        responseMessage.current.style.display = "block";
       }
-    }).then(res=>res).catch(err=>console.log(err))
-    
-    if(response.status === 200){
-      const data = await response.data;
-      responseMessage.current.innerText = data.message;
-      responseMessage.current.style.display = "block";
-    }else if(response.status === 201){
-      const data = await response.data;
-      responseMessage.current.innerText = data.message;
-      responseMessage.current.style.display = "block";
     }
 
+  }
+
+  function checkFormData(event){
+    let isValid = true;
+    if(event.target.username.value.trim().length<5){
+      username_err.current.style.display = "block";
+      username_err.current.innerText = "Username should be at least 5 character long";
+      isValid = false;
+    }else{
+      username_err.current.style.display = "none";
+      username_err.current.innerText = "";
+    }
+
+    if(event.target.password.value.trim().length<8 || !event.target.password.value.match(/^[A-Z]\w+[^\w]+$/)){
+      password_err.current.style.display = "block";
+      password_err.current.innerText = "Password should be at least 8 character long and password should start from uppercase letter and should contain atleast one special character at the end";
+      isValid = false;
+    }else{
+      password_err.current.style.display = "none";
+      password_err.current.innerText = "";
+    }
+
+    if(event.target.number.value.trim().length!=12){
+      number_err.current.style.display = "block";
+      number_err.current.innerText = "Invalid phone number(phone number must contain country code at the beginning)";
+      isValid = false;
+    }else{
+      number_err.current.style.display = "none";
+      number_err.current.innerText = "";
+    }
+
+    if(event.target.password.value.trim() != event.target['co-password'].value.trim()){
+      copassword_err.current.style.display = "block";
+      copassword_err.current.innerText = "Password does not match";
+      isValid = false;
+    }else{
+      copassword_err.current.style.display = "none";
+      copassword_err.current.innerText = "";
+    }
+
+    return isValid;
   }
 
   function changeColor(event){

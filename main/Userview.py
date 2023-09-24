@@ -12,6 +12,8 @@ import pytz
 
 def GetUserImage(request):
     image_name = request.GET.get('image')
+    if(not image_name):
+        return HttpResponse(b'',content_type="image/*")
     image_path = os.path.join(settings.MEDIA_ROOT,image_name)
     with open(image_path,"rb") as fp:
         return HttpResponse(fp.read(),content_type="image/*")
@@ -19,10 +21,13 @@ def GetUserImage(request):
 def GetUserImageById(request):
     user_id = request.GET.get("user_id")
     user = User.objects.get(_id=ObjectId(user_id))
-    image_path = os.path.join(settings.MEDIA_ROOT,user.upload_image.name)
-    print(image_path)
-    with open(image_path,"rb") as fp:
-        return HttpResponse(fp.read(),content_type="image/*")
+    if(user.upload_image.name):
+        image_path = os.path.join(settings.MEDIA_ROOT,user.upload_image.name)
+        print(image_path)
+        with open(image_path,"rb") as fp:
+            return HttpResponse(fp.read(),content_type="image/*")
+    else:
+        return HttpResponse(b'',content_type="image/*")
 
 @api_view(["POST"])
 def addGroup(request):
