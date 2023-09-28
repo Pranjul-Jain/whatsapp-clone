@@ -7,15 +7,17 @@ const AddMembers = ({
     allUsers,
     user_id
 }) => {
-  const members = useRef()
+
+  const [member,setMember] = useState("")
   const [selectedCards, setSelectedCards] = useState([])
   const [toggleGroupForm,setToggleGroupForm] = useState(false)
 
   useEffect(()=>{
+    const groupDetails = document.querySelector("#group-details");
     if(toggleGroupForm){
-        document.querySelector("#group-details").style.left="0";
+        groupDetails.style.left="0";
     }else{
-        document.querySelector("#group-details").style.left="-100%";
+        groupDetails.style.left="-100%";
     }
   },[toggleGroupForm])
   
@@ -37,12 +39,12 @@ const AddMembers = ({
                     })
                 }
             </div>
-            <input className='members' defaultValue={""} type="text" placeholder='Type contact name' name="members" ref={members} />
+            <input className='members' defaultValue={""} type="text" placeholder='Type contact name' name="members" onChange={(e)=>{setMember(e.target.value)}} />
         </div>
         <div className="members-user-profiles">
             {
-                allUsers && allUsers.length >= 1 && allUsers.map((data,index)=>{
-                    if(data.receiver_id_id && members.current && (!members.current.value.trim() || data.name.match(new RegExp(members.current.value.trim(),"i")))){
+                allUsers.map((data,index)=>{
+                    if(data.receiver_id && (!member || (data.name.match(new RegExp(member.trim(),"i"))))){
                         
                         let display="d-grid";
                         if((selectedCards.length >=1 && selectedCards.indexOf("group-user-card-"+(index)) !== -1)){
@@ -59,7 +61,7 @@ const AddMembers = ({
         </div>
         }
 
-        <AddGroupForm getUsers={getUsers} setSelectedCards={setSelectedCards} setToggleGroupForm={setToggleGroupForm} selectedCards={selectedCards} user_id={user_id} />
+        <AddGroupForm getUsers={getUsers} setSelectedCards={setSelectedCards} setToggleGroupForm={setToggleGroupForm} toggleForm={toggleForm} selectedCards={selectedCards} user_id={user_id} />
     </div>
   )
 

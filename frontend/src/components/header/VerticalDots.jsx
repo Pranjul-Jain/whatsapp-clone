@@ -36,6 +36,7 @@ const VerticalDots = ({
     const memberForm = document.querySelector(className)
 
     if(memberForm.style.left === "-100%" || !memberForm.style.left){
+      console.log("enter")
       memberForm.style.left = "0";
     }else{
       memberForm.style.left = "-100%";

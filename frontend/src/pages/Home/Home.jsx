@@ -69,7 +69,7 @@ const Home = ({
             })
             }
           </div>
-          <AddMemberForm getUser={getUsers} user_id={user_id} />
+          <AddMemberForm getUsers={getUsers} user_id={user_id} />
           {allUsers && allUsers.length >= 1 && <AddMembers getUsers={getUsers} user_id={user_id} allUsers={allUsers} />}
         </div>
         {
@@ -88,9 +88,9 @@ const Home = ({
   async function getUsers(user_id,controller=null){
 
     const res = await axios.get(import.meta.env.VITE_SERVER_URL + "/getusers/"+user_id,(controller?{
-      headers :{
+      headers :controller?{
         signal:controller.signal
-      },
+      }:{},
       withCredentials:true
     }:{})).then(res=>res).catch(err=>console.log(err))
 

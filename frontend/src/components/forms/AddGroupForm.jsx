@@ -8,6 +8,7 @@ const AddGroupForm = ({
   selectedCards,
   setToggleGroupForm,
   setSelectedCards,
+  toggleForm,
   user_id
 }) => {
   const errorMsg = useRef()
@@ -24,9 +25,11 @@ const AddGroupForm = ({
         </i>
         <input name="group-image" type="file" accept='image/*' />
       </label>
-      <div className="group-input-box">
-        <input autoComplete='off' className='group-input' defaultValue={""} onChange={inputHandler} onKeyDown={(event)=> event.key.toLowerCase() === "enter"?event.preventDefault():console.log(event.key)} type="text" name="group-name"/>
-        <p className="group-subject-heading">Group Subject</p>
+      <div className='group-input-box'>
+        <div className="group-input-frame">
+          <input autoComplete='off' className='group-input' defaultValue={""} onChange={inputHandler} onKeyDown={(event)=> event.key.toLowerCase() === "enter"?event.preventDefault():""} type="text" name="group-name"/>
+          <p className="group-subject-heading">Group Subject</p>
+        </div>
       </div>
       <p className='errormsg' ref={errorMsg}>
       </p>
@@ -53,13 +56,12 @@ const AddGroupForm = ({
     })
 
     document.querySelector("#group-details").reset()
-
     setSelectedCards([])
-
     if(response){
-      getUsers(user_id.current)
       inputHandler(null)
       setToggleGroupForm(false)
+      toggleForm();
+      getUsers(user_id.current)
     }else{
       errorMsg.current = "Some error occured try again"
     }
