@@ -5,6 +5,9 @@ static
 node_modules
 **/__pycache__
 */__pycache__
+templates/*
+static/*
+media/*
 
 .vscode/*
 !.vscode/extensions.json

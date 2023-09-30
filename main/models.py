@@ -8,6 +8,7 @@ class User(models.Model):
     number = models.CharField(max_length=13,null=False,blank=False,unique=True)
     upload_image = models.ImageField(upload_to="images/")
     password = models.CharField(max_length=200,null=False,blank=False)
+    objects = models.DjongoManager()
 
 class Messages(models.Model):
     _id = models.CharField(max_length=30,primary_key=True,default=uuid.uuid4().hex)

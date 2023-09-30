@@ -60,7 +60,6 @@ const Home = ({
           <div className="known-user-profiles">
             {
               allUsers && allUsers.length >= 1 && allUsers.map((data,index)=>{
-                console.log(data.receiver_id)
                 if(data.receiver_id)
                 return (<KnownUserCard currentUser={currentUser} setCurrentUser={setCurrentUser} image={data.receiver_id__upload_image} imageurl={null} name={data.name} time={data.messages.length > 1?data.messages.at(-1).message_timestamp:null} message={data.messages.length > 1?data.messages.at(-1).message:"hi"} id={"known-user-card-"+(index)} key={index+1}/>)
                 else{
@@ -74,7 +73,6 @@ const Home = ({
         </div>
         {
           allUsers && allUsers.length >= 1 && allUsers.map((data,index)=>{
-            console.log(data.receiver_id)
             if(data.receiver_id)
             return <MessageSection isAuthenticated={isAuthenticated} image={data.receiver_id__upload_image} aria-label={"known-user-card-"+index} heading={data.name} sub_heading={"click here for contact info"} messages={data.messages} user_id={user_id.current} receiver_id={data.receiver_id} className={index==currentUser?"d-grid":""} key={"message-section-"+index+1} group={false} />
             else{ 

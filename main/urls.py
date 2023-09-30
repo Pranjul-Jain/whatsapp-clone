@@ -30,5 +30,6 @@ urlpatterns = [
     path("getusers/<str:user_id>",views.Getusers),
     path("getuserimage/",Userview.GetUserImage),
     path("getuserimagebid/",Userview.GetUserImageById),
-    path("creategroup",Userview.addGroup)
+    path("creategroup",Userview.addGroup),
+    path("getreceivername/",Userview.getReceiverName),
 ]

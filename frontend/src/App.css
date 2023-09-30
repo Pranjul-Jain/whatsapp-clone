@@ -544,26 +544,16 @@
   cursor:pointer;
 }
 
-/*
-.chatbox-form{
-  display: grid;
-  place-items: center;
-  width:78%;
-  height:100%;
-}
-*/
-
 .chatbox-input{
   position: relative;
   width:80%;
-  height: 50px;
+  height: 40px;
   max-height: 8rem;
   min-height: 2rem;
   font-family: sans-serif;
   padding-left: 1.2em;
   font-size: 0.9rem;
   word-spacing: 0;
-  text-align:justify;
   resize: none; 
 }
 

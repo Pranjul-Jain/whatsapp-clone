@@ -135,4 +135,3 @@ def Getusers(request,user_id):
         return JsonResponse({"users":all_users + all_groups},safe=False)
     else:
         return JsonResponse({"users":None},safe=False)
-    

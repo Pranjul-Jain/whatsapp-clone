@@ -23,7 +23,7 @@ const Chatbox = ({
     }
 
     chatsocket.onclose = (event)=>{
-      alert("this user connection has been closed unexpectedly")
+      console.log("this user connection has been closed unexpectedly")
     }
   },[chatsocket])
 
@@ -38,7 +38,7 @@ const Chatbox = ({
     const chatboxInput = document.querySelector(".chatbox-input");
     if(chatboxInput){
       chatboxInput.style.height = "auto";
-      chatboxInput.style.height = "40"+"px";
+      chatboxInput.style.height = "40px";
     }
   },[])
 
@@ -62,13 +62,14 @@ const Chatbox = ({
   }
 
   function handleKey(event){
-    const chatboxInput = document.querySelector(".chatbox-input");
+    const chatboxInput = chatboxRef.current;
 
     if(event.keyCode === 13 && !event.shiftKey){
+      event.preventDefault();
       sendMessage(event.target.value)
       event.target.value = "";
-      chatboxInput.style.height = "auto";
-      chatboxInput.style.height =  "40"+"px";
+      chatboxInput.style.height = "40px";
+      chatboxInput.scrollTop = 0;
     }
     else{
       chatboxInput.style.height = "auto";

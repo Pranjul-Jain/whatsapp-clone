@@ -35,7 +35,7 @@ const MessageSection = (props) => {
   return (
     <div className={"messages-section "+props.className}>
         <Navbar heading={props.heading} sub_heading={props.sub_heading} image={props.image} />
-        <MessageDisplay group={props.group} key={"message-display"+new Date().getTime()} messages={messages} user_id={props.user_id} />  
+        <MessageDisplay group={props.group} key={"message-display"+new Date().getTime()} messages={messages} user_id={props.user_id} receiver_id={props.receiver_id} />  
         <Emojis chatboxRef={chatboxRef} emojiState={emojiState} setEmojiState={setEmojiState} />
         {chatsocket?<Chatbox group={props.group} chatboxRef={chatboxRef} emojiState={emojiState} setEmojiState={setEmojiState} className={props.className} aria-label={props['aria-label']} user_id={props.user_id} chatsocket={chatsocket} setMessages={setMessages} receiver_id={props.receiver_id}/>:null}
     </div>

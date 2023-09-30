@@ -2,7 +2,7 @@ from django.http import HttpResponse , JsonResponse
 from django.conf import settings
 from rest_framework.decorators import  api_view
 from rest_framework.response import Response
-from main.admin import Group , User
+from main.admin import Group , User , Connection
 import os
 import uuid
 import json
@@ -52,3 +52,20 @@ def addGroup(request):
     group.save()
     
     return Response({"message":"success"})
+
+@api_view(["GET"])
+def getReceiverName(request):
+    
+    user_id = request.GET.get("user_id")
+    receiver_id = request.GET.get("receiver_id")
+
+    data = list(Connection.objects.mongo_find({"user_id":ObjectId(user_id),"receiver_id":ObjectId(receiver_id)},{"name":1}))
+    if data:
+        return Response({"username":data[0]["name"]})
+    
+    user = list(User.objects.mongo_find({"_id":ObjectId(user_id)},{"number":1}))
+
+    if user:
+        return Response({"username":user[0]["number"]})
+    else:
+        return Response({"username":None})

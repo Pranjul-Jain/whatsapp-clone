@@ -9,12 +9,15 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
 
 import os
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
+
+import django
+django.setup()
+
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import URLRouter , ProtocolTypeRouter
 from chat.routing import url_patterns as chat_url_patterns
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
