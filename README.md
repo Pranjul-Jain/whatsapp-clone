@@ -1,6 +1,6 @@
 # whatsapp-clone
 
-# Database Used
+## Database Used
 
 > *MONGODB*
 
