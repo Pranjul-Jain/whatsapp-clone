@@ -22,15 +22,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = bool(os.getenv("DJANGO_DEBUG", "True"))
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+if DEBUG:
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = ["whatsapp-backend","127.0.0.1", "localhost"]
 
 # Application definition
 
@@ -64,8 +66,10 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://localhost",
     "http://127.0.0.1:8000",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -88,6 +92,10 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1",
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -96,7 +104,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates"
+            BASE_DIR / "frontend/dist/"
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -110,14 +118,24 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'main.wsgi.application'
+WSGI_APPLICATION = 'main.wsgi.application'
 ASGI_APPLICATION = 'main.asgi.application'
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
+if DEBUG:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer"
+        }
     }
-}
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("127.0.0.1", 6379)],
+            },
+        },
+    }
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -130,14 +148,31 @@ DATABASES = {
 }
 '''
 
+# DATABASES = {
+#      'default': {
+#         'ENGINE': 'djongo',
+#         'ENFORCE_SCHEMA': False,
+#         'NAME': os.getenv('MONGO_DB_NAME'),
+#         'CLIENT': {
+#             'host': os.getenv('MONGO_DB_HOST'),
+#             'port': int(os.getenv('MONGO_DB_PORT')),
+#             'username': os.getenv('MONGO_DB_USERNAME'),
+#             'password': os.getenv('MONGO_DB_PASSWORD'),
+#         },
+#     }
+# }
+
 DATABASES = {
-     'default': {
-         'ENGINE': 'djongo',
-         'NAME': os.getenv("DATABASE_NAME"),
-         "HOST" : os.getenv("DATABASE_HOST"),
-         "port" : os.getenv("DATABASE_PORT")
-     }
- }
+    'default': {
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': False,
+        "NAME":os.getenv('MONGO_DB_NAME'),
+        'CLIENT': {
+            'host': os.getenv('MONGO_DB_URI'),
+        },
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -173,13 +208,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+
 STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
-STATIC_URL = 'assets/'
+STATIC_URL = '/assets/'
 STATIC_ROOT = (BASE_DIR / "static")
 
 #Media Folders
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = (BASE_DIR / "media")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

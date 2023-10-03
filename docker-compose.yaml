@@ -1,0 +1,82 @@
+version : '3.9'
+
+services:
+  whatsapp-backend:
+    build:
+      context : .
+      dockerfile : Dockerfile
+    restart: always
+    ports:
+      - 8000:8000
+    image: whatsapp-backend
+    volumes:
+      - static-data:/app/static/
+      - media-data:/app/media/
+    hostname: backend
+    environment:
+      - DJANGO_SETTINGS_MODULE=main.settings
+    env_file:
+      - ./.env
+      - frontend/.env
+    command : sh -c "chmod +x ./entrypoint.sh && sh ./entrypoint.sh"
+    depends_on:
+      - redis
+      - mongo
+    networks: 
+      - arias-network
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    expose: 
+      - 27017
+    env_file:
+      - ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB_NAME}
+    volumes:
+      - mongodb-db:/var/lib/mongodb/data/db
+    networks: 
+      - arias-network
+
+  redis:
+    image: redis:7.2.1-alpine
+    restart: always
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    volumes:
+      - redis-db:/var/lib/redis/data/db
+
+  nginx:
+    build:
+      dockerfile : Nginx-Dockerfile
+    image: nginx-server
+    restart: always
+    environment:
+      - hostname=backend
+    volumes:
+      - static-data:/app/static/
+      - media-data:/app/media/
+    command : nginx -g 'daemon off;'
+    env_file:
+      - ./.env
+    ports:
+      - 80:80
+    networks: 
+      - arias-network
+    depends_on:
+      - whatsapp-backend
+
+volumes:
+  mongodb-db:
+  static-data:
+  media-data:
+  redis-db:
+networks:
+  arias-network:
