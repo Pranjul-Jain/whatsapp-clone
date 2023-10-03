@@ -47,7 +47,3 @@
 > cp `fontend/dist/index.html` file to `templates` folder 
 
 > run `python manage.py runserver` to start asgi server
-
-*-------------------------------------------------------------------------------------------------------*
-
-# *Project Deployment files like DockerFile , .yaml file and nginx conf file will be updated soon*
