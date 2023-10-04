@@ -1,4 +1,4 @@
-from django.http import HttpResponse , JsonResponse
+from django.http import HttpResponse
 from django.conf import settings
 from rest_framework.decorators import  api_view
 from rest_framework.response import Response
@@ -23,7 +23,6 @@ def GetUserImageById(request):
     user = User.objects.get(_id=ObjectId(user_id))
     if(user.upload_image.name):
         image_path = os.path.join(settings.MEDIA_ROOT,user.upload_image.name)
-        print(image_path)
         with open(image_path,"rb") as fp:
             return HttpResponse(fp.read(),content_type="image/*")
     else:
@@ -41,10 +40,11 @@ def addGroup(request):
         for member in members:
             member["_id"] = uuid.uuid4().hex
             member['message_timestamp'] = timestamp
-
-    if image:
+    
+    if not isinstance(image,str):
         image.name = image.name[:image.name.find(".")] + str(uuid.uuid4()) + image.name[image.name.find("."):]
-
+    else:
+        image = ""
     group = Group(name=name,creator_id=User.objects.get(_id=ObjectId(request.session.get("user",None))),upload_image=image,members=[],admin=[]\
                 ,timestamp=datetime.now(pytz.timezone("Asia/kolkata")).strftime("%a %b %d %Y %H:%M:%S GMT%z (%Z)"),messages=[],restriction=False)
     group.members = members
@@ -61,7 +61,7 @@ def getReceiverName(request):
 
     data = list(Connection.objects.mongo_find({"user_id":ObjectId(user_id),"receiver_id":ObjectId(receiver_id)},{"name":1}))
     if data:
-        return Response({"username":data[0]["name"]})
+        return Response({"username":data[0]["name"][2:]})
     
     user = list(User.objects.mongo_find({"_id":ObjectId(user_id)},{"number":1}))
 

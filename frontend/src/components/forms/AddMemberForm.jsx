@@ -8,8 +8,8 @@ const AddMemberForm = ({
     getUsers
 }) => {
   return (
-    <div className="add-member-section">
-        <h1 className="heading">Add Member <button onClick={()=>document.querySelector(".add-member-section").style.left="-100%"}>X</button></h1>
+    <div className="add-member-section" aria-label="false">
+        <h1 className="heading">Add Member <button onClick={()=>{document.querySelector(".add-member-section .add-member-form").style.display="none";;document.querySelector(".add-member-section").style.left="-100%"}}>X</button></h1>
         <hr />
         <form className="add-member-form" onSubmit={addMember}>
             <div className="form-control">
@@ -45,6 +45,7 @@ const AddMemberForm = ({
             event.target.number.value = ""
             event.target.name.value = ""
             document.querySelector(".add-member-section").style.left="-100%";
+            document.querySelector(".add-member-section .add-member-form").style.display="none";
             getUsers(user_id.current)
         }
     }

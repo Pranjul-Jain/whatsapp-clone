@@ -1,53 +1,35 @@
-import React,{useRef,useEffect} from 'react'
+import React,{useRef,useEffect,useState} from 'react'
 import sampleUserImg from "../../assets/images/sample_user.jpg"
 import axios from "axios"
 
 const KnownUserCard = (props) => {
-  const imageUrl = useRef("")
-  const mounted = useRef(false)
+  const [imageUrl,setImageurl] = useState("")
+  const [mounted,setMounted] = useState(false)
+  const [currentImg,setcurrentImg] = useState("")
+
   const time = props.time?new Date(props.time):null;
+
+  if(currentImg && props.image!=currentImg){
+    getUserImage(props.image,null);
+  }
 
   useEffect(()=>{
     const controller = new AbortController();
 
-    const getUserImage = async (image)=>{
-      mounted.current = true
-      await axios.get(import.meta.env.VITE_SERVER_URL + "/getuserimage/",{
-        responseType:"arraybuffer",
-        params:{
-          image
-        },
-        headers:{
-          signal:controller.signal
-        }
-      }).then(res=>{
-        
-        const base64Image = btoa(
-          new Uint8Array(res.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ''
-          )
-        );
+    props.image && !props.imageurl && (!mounted)  ? getUserImage(props.image,controller):null
 
-        if(base64Image)
-        imageUrl.current.src =  `data:${res.headers['content-type']};base64,${base64Image}`
-        else
-        imageUrl.current.src = props.imageurl;
-      }).catch(err=>console.log(err))
-  
-    }
-
-    props.image && !props.imageurl && !mounted.current  ? getUserImage(props.image):null
+    setMounted(true);
 
     return ()=>{
       controller.abort();
     }
   },[])
   
+
   return (
     <div onClick={()=>selectedCard(props.id)} id={props.id} className="known-user-card" aria-selected="false">
         {props.image? 
-        <img ref={imageUrl} className="user-image" src={props.imageurl} alt="known-user" />:
+        <img className="user-image" src={imageUrl} alt="known-user" />:
         <i className="fa-solid fa-user"></i>
         }
         <div className="user-info">
@@ -59,6 +41,36 @@ const KnownUserCard = (props) => {
         </div>
     </div>
   )
+
+  async function getUserImage (image,controller){
+  
+    await axios.get(import.meta.env.VITE_SERVER_URL + "/getuserimage/",{
+      responseType:"arraybuffer",
+      params:{
+        image
+      },
+      headers:{
+        signal:controller?controller.signal:null,
+      }
+    }).then(res=>{
+      
+      const base64Image = btoa(
+        new Uint8Array(res.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ''
+        )
+      );
+
+      if(base64Image)
+      setImageurl(`data:${res.headers['content-type']};base64,${base64Image}`)
+      else
+      setImageurl(sampleUserImg)
+
+      setcurrentImg(props.image)
+
+    }).catch(err=>console.log(err))
+
+  }
 
   function selectedCard(currentId){
     if(props.currentUser >=0){

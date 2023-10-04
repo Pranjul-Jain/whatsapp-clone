@@ -7,7 +7,7 @@ const MessageDisplay = ({group,messages,user_id}) => {
   let currentDate = null;
   const usersName = useRef({});
   return (
-    <div className="message-display" id={"message-display - "+new Date().getTime()}>
+    <div className="message-display" key={new Date().getTime()} id={"message-display - "+new Date().getTime()}>
         { messages.length >= 1 && 
           messages.map(
             (_,index)=>{

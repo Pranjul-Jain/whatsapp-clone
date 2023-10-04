@@ -1,37 +1,22 @@
-import React,{useRef,useEffect} from 'react'
+import React,{useRef,useEffect,useState} from 'react'
 import sampleUserImg from "../../assets/images/sample_user.jpg"
 import axios from "axios"
 
 const GroupUserCard = ({setSelectedCards,selectedCards,...props}) => {
-  const imageUrl = useRef("")
-  const mounted = useRef(false)
+  const [imageUrl,setImageurl] = useState("")
+  const [mounted,setMounted] = useState(false)
+  const [currentImg,setcurrentImg] = useState("")
+
+  if(currentImg && props.image!=currentImg){
+    getUserImage(props.image,null);
+  }
 
   useEffect(()=>{
     const controller = new AbortController();
 
-    const getUserImage = async (image)=>{
-      mounted.current = true
-      await axios.get(import.meta.env.VITE_SERVER_URL + "/getuserimage/",{
-        responseType:"arraybuffer",
-        params:{
-          image
-        },
-        headers:{
-          signal:controller.signal
-        }
-      }).then(res=>{
-        const base64Image = btoa(
-          new Uint8Array(res.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ''
-          )
-        );
-        imageUrl.current.src = `data:${res.headers['content-type']};base64,${base64Image}`;
-      }).catch(err=>console.log(err))
-  
-    }
+    props.image && !props.imageurl && (!mounted)  ? getUserImage(props.image,controller):null
 
-    props.image && !props.imageurl && !mounted.current  ? getUserImage(props.image):null
+    setMounted(true);
 
     return ()=>{
       controller.abort();
@@ -41,12 +26,43 @@ const GroupUserCard = ({setSelectedCards,selectedCards,...props}) => {
   return (
     <div onClick={addCard} id={props.id} className={"members-user-card"+" "+props.display} receiver_id={props.receiver_id}>
         {props.image? 
-        <img ref={imageUrl} className="user-image" src={props.imageurl} alt="user image" />:
+        <img className="user-image" src={imageUrl} alt="user image" />:
         <i className="fa-solid fa-user"></i>
         }
         <div className="members-heading">{props.name}</div>
     </div>
   )
+
+  async function getUserImage (image,controller){
+  
+    await axios.get(import.meta.env.VITE_SERVER_URL + "/getuserimage/",{
+      responseType:"arraybuffer",
+      params:{
+        image
+      },
+      headers:{
+        signal:controller?controller.signal:null,
+      }
+    }).then(res=>{
+      
+      const base64Image = btoa(
+        new Uint8Array(res.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ''
+        )
+      );
+
+      if(base64Image)
+      setImageurl(`data:${res.headers['content-type']};base64,${base64Image}`)
+      else
+      setImageurl(sampleUserImg)
+
+      setcurrentImg(props.image)
+
+    }).catch(err=>console.log(err))
+
+  }
+
 
   function addCard(){
     selectedCards.indexOf(props.id) === -1

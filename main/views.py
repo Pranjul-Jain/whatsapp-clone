@@ -3,9 +3,8 @@ from django.middleware.csrf import get_token
 from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from main.admin import User , Connection ,Group , MemberDetails
+from main.admin import User , Connection ,Group
 from djongo.models import *
-from django.forms.models import model_to_dict
 from django.shortcuts import render
 import uuid
 import dotenv
@@ -127,6 +126,8 @@ def Getusers(request,user_id):
 
     for users in all_users:
         users["receiver_id"] = str(users["receiver_id"])
+        if len(users['name'])==12 and users['name'].isdigit():
+            users['name'] = users['name'][2:]
 
     if not all_groups:
         all_groups = []

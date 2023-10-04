@@ -1,4 +1,4 @@
-import React,{useRef} from 'react'
+import React,{useRef,useState} from 'react'
 import axios from "axios"
 
 axios.defaults.withCredentials = true
@@ -12,18 +12,21 @@ const AddGroupForm = ({
   user_id
 }) => {
   const errorMsg = useRef()
+  const [image,setImage] = useState("")
 
   return (
     <form className="add-members-section gr-sec" id="group-details" onSubmit={createGroup}>
-      <h1 className="heading"><button style={{outline:"none"}} onClick={()=>setToggleGroupForm(false)}><i className="fa-sharp fa-solid fa-arrow-left"></i></button> New group</h1>
+      <h1 className="heading"><button style={{outline:"none"}} onClick={()=>{setToggleGroupForm(false)}}><i className="fa-sharp fa-solid fa-arrow-left"></i></button> New group</h1>
       <label className="group-image-upload">
-        <i className="fa-solid fa-user-group">
+          {image?<img className='group-image' src={image} ></img>:
+          <i className="fa-solid fa-user-group">
           <div className="icon-display">
             <i className="fa-solid fa-camera"></i>
             <p>Add group icon</p>
           </div>
-        </i>
-        <input name="group-image" type="file" accept='image/*' />
+          </i>
+        } 
+        <input name="group-image" type="file" accept='image/*' onChange={createImageurl}/>
       </label>
       <div className='group-input-box'>
         <div className="group-input-frame">
@@ -41,6 +44,12 @@ const AddGroupForm = ({
 
   async function createGroup(event){
     event.preventDefault();
+
+    if(event.target['group-name'].value.trim().length === 0){
+      errorMsg.current = "Please enter group name"
+      return
+    }
+
     const formdata = new FormData()
     formdata.append("name",event.target["group-name"].value)
     formdata.append("image",event.target["group-image"].files[0])
@@ -61,6 +70,7 @@ const AddGroupForm = ({
       inputHandler(null)
       setToggleGroupForm(false)
       toggleForm();
+      setImage("");
       getUsers(user_id.current)
     }else{
       errorMsg.current = "Some error occured try again"
@@ -86,6 +96,13 @@ const AddGroupForm = ({
         groupHeading.classList.remove("upandown")
       }
     }
+  }
+
+  function createImageurl(event){
+    event.preventDefault();
+    const file = event.target.files[0];
+    const src = (window.URL) ? window.URL.createObjectURL(file) : window.webkitURL.createObjectURL(file);
+    setImage(src);
   }
 
 }

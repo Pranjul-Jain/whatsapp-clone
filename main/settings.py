@@ -26,8 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = bool(os.getenv("DJANGO_DEBUG", "True"))
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = []
@@ -148,30 +147,28 @@ DATABASES = {
 }
 '''
 
-# DATABASES = {
-#      'default': {
-#         'ENGINE': 'djongo',
-#         'ENFORCE_SCHEMA': False,
-#         'NAME': os.getenv('MONGO_DB_NAME'),
-#         'CLIENT': {
-#             'host': os.getenv('MONGO_DB_HOST'),
-#             'port': int(os.getenv('MONGO_DB_PORT')),
-#             'username': os.getenv('MONGO_DB_USERNAME'),
-#             'password': os.getenv('MONGO_DB_PASSWORD'),
-#         },
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'ENFORCE_SCHEMA': False,
-        "NAME":os.getenv('MONGO_DB_NAME'),
-        'CLIENT': {
-            'host': os.getenv('MONGO_DB_URI'),
-        },
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': os.getenv('MONGO_DB_NAME'),
+            'CLIENT': {
+                'host': os.getenv('DATABASE_HOST'),
+                'port': int(os.getenv('MONGO_DB_PORT')),
+            },
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'djongo',
+            'ENFORCE_SCHEMA': False,
+            "NAME":os.getenv('MONGO_DB_NAME'),
+            'CLIENT': {
+                'host': os.getenv('MONGO_DB_URI'),
+            },
+        }
+    }
 
 
 # Password validation

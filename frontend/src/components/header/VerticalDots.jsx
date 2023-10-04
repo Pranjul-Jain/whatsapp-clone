@@ -1,4 +1,4 @@
-import React,{useRef} from 'react'
+import React,{useEffect, useRef,useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from "axios"
 
@@ -34,12 +34,16 @@ const VerticalDots = ({
 
   function toggleForm(className){
     const memberForm = document.querySelector(className)
+    const submemberForm = memberForm.querySelector(".add-member-form")
 
     if(memberForm.style.left === "-100%" || !memberForm.style.left){
-      console.log("enter")
       memberForm.style.left = "0";
+      memberForm.style.opacity = "1";
+      submemberForm.style.display = "grid";
     }else{
       memberForm.style.left = "-100%";
+      memberForm.style.opacity = "0";
+      submemberForm.style.display = "none"
     }
 
   }

@@ -32,7 +32,7 @@ const AddMembers = ({
 
                         return (
                             <div className="sm-group-user-card" key={"sm-group-user-profiles-"+(index+1)}>
-                                <img className="sm-user-image" src={cardInfo.querySelector(".user-image").src} />
+                                {cardInfo.querySelector(".user-image")?<img className="sm-user-image" src={cardInfo.querySelector(".user-image").src} />:<i className="fa-solid fa-user"></i>}
                                 <p className="sm-members-heading">{cardInfo.querySelector(".members-heading").innerText} <button className="sm-cross-button" onClick={()=>setSelectedCards(prevState=>prevState.filter((data=>data !== cardInfo.id)))}>X</button></p>
                             </div>
                         )

@@ -61,9 +61,9 @@ const Home = ({
             {
               allUsers && allUsers.length >= 1 && allUsers.map((data,index)=>{
                 if(data.receiver_id)
-                return (<KnownUserCard currentUser={currentUser} setCurrentUser={setCurrentUser} image={data.receiver_id__upload_image} imageurl={null} name={data.name} time={data.messages.length > 1?data.messages.at(-1).message_timestamp:null} message={data.messages.length > 1?data.messages.at(-1).message:"hi"} id={"known-user-card-"+(index)} key={index+1}/>)
+                return (<KnownUserCard currentUser={currentUser} setCurrentUser={setCurrentUser} newimage={true} image={data.receiver_id__upload_image} imageurl={null} name={data.name} time={data.messages.length > 1?data.messages.at(-1).message_timestamp:null} message={data.messages.length > 1?data.messages.at(-1).message:"hi"} id={"known-user-card-"+(index)} key={index+1}/>)
                 else{
-                return (<KnownUserCard currentUser={currentUser} setCurrentUser={setCurrentUser} image={data.upload_image} imageurl={null} name={data.name} time={data.messages.length > 1?data.messages.at(-1).message_timestamp:null} message={data.messages.length > 1?data.messages.at(-1).message:"hi"} id={"known-user-card-"+(index)} key={index+1} />)
+                return (<KnownUserCard currentUser={currentUser} setCurrentUser={setCurrentUser} newimage={true} image={data.upload_image} imageurl={null} name={data.name} time={data.messages.length > 1?data.messages.at(-1).message_timestamp:null} message={data.messages.length > 1?data.messages.at(-1).message:"hi"} id={"known-user-card-"+(index)} key={index+1} />)
                 }
             })
             }
