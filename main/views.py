@@ -82,8 +82,10 @@ def createConnection(request):
     user_id = request.data.get('user_id',None)
     receiver = User.objects.filter(number=number)
     if receiver:
-        receiver = receiver[0]
+        receiver = str(receiver[0])
         try:
+            if receiver._id == user_id:
+                return Response({"message":"can't connect with yourself"})
             user = Connection.objects.mongo_find({"user_id":ObjectId(user_id),"receiver_id":ObjectId(receiver._id)})
 
             if user.count()>0:
