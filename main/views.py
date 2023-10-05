@@ -10,6 +10,7 @@ import uuid
 import dotenv
 from datetime import datetime , timedelta
 from bson import ObjectId
+import pytz
 
 # Loading .env file
 dotenv.load_dotenv()
@@ -57,15 +58,18 @@ def login_user(request):
     
     number = request.data.get("number",None)
     password = request.data.get("password",None)
+
     try:
         user = User.objects.filter(number=number)[0]
+
         request.session['user'] = str(user._id)
+
         if check_password(password,user.password):
             return JsonResponse({"message":"login successfully","user_id":request.session["user"]},status=200)
         else:
             return JsonResponse({"message":"Password is Wrong"},status=200)
     except Exception as e:
-        print(e)
+        print(e,"ok....")
         return JsonResponse({"message":"Not Registered"},status=200)
 
 def logout_user(request):
@@ -82,9 +86,9 @@ def createConnection(request):
     user_id = request.data.get('user_id',None)
     receiver = User.objects.filter(number=number)
     if receiver:
-        receiver = str(receiver[0])
+        receiver = receiver[0]
         try:
-            if receiver._id == user_id:
+            if str(receiver._id) == user_id:
                 return Response({"message":"can't connect with yourself"})
             user = Connection.objects.mongo_find({"user_id":ObjectId(user_id),"receiver_id":ObjectId(receiver._id)})
 
@@ -94,9 +98,9 @@ def createConnection(request):
             name = name if name else number
             sender = User.objects.get(_id=ObjectId(user_id))
 
-            Connection.objects.mongo_insert({"name":name,"user_id":ObjectId(user_id),"receiver_id":receiver._id,"messages":[]})
+            Connection.objects.mongo_insert({"name":name,"user_id":ObjectId(user_id),"receiver_id":receiver._id,"messages":[],"message_timestamp":datetime.now(pytz.timezone("Asia/kolkata")).strftime("%a %b %d %Y %H:%M:%S GMT%z (%Z)")})
             
-            connection_id = Connection.objects.mongo_insert({"name":sender.number,"user_id":receiver._id,"receiver_id":ObjectId(user_id),"messages":[]})
+            connection_id = Connection.objects.mongo_insert({"name":sender.number,"user_id":receiver._id,"receiver_id":ObjectId(user_id),"messages":[],"message_timestamp":datetime.now(pytz.timezone("Asia/kolkata")).strftime("%a %b %d %Y %H:%M:%S GMT%z (%Z)")})
 
             return Response({"message":"user added","_id":str(connection_id)})
         except Exception as e:
@@ -133,7 +137,7 @@ def Getusers(request,user_id):
 
     if not all_groups:
         all_groups = []
-
+    
     if all_users:
         return JsonResponse({"users":all_users + all_groups},safe=False)
     else:

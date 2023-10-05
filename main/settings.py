@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv("DJANGO_DEBUG")))
 
 if DEBUG:
     ALLOWED_HOSTS = []
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "authentication.apps.AuthenticationConfig",
 ]
 
 MIDDLEWARE = [
@@ -131,7 +132,7 @@ else:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [("127.0.0.1", 6379)],
+                "hosts": [("redis", 6379)],
             },
         },
     }
@@ -166,6 +167,7 @@ else:
             "NAME":os.getenv('MONGO_DB_NAME'),
             'CLIENT': {
                 'host': os.getenv('MONGO_DB_URI'),
+                "port":int(os.getenv("MONGO_DB_PORT")),
             },
         }
     }
@@ -209,6 +211,7 @@ USE_TZ = True
 STATICFILES_DIRS = [BASE_DIR / "frontend/dist/assets"]
 STATIC_URL = '/assets/'
 STATIC_ROOT = (BASE_DIR / "static")
+print(STATIC_ROOT)
 
 #Media Folders
 MEDIA_URL = "/media/"

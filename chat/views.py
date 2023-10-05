@@ -39,6 +39,7 @@ class Consumer(AsyncWebsocketConsumer):
                 "message": data['message'],
                 "message_timestamp": datetime.now(pytz.timezone("Asia/kolkata")).strftime("%a %b %d %Y %H:%M:%S GMT%z (%Z)")
         }
+
         if not self.is_group:    
             sender = await sync_to_async(Connection.objects.get)(user_id=ObjectId(self.sender),receiver_id=ObjectId(self.receiver))
             sender.messages.append(user_data)
