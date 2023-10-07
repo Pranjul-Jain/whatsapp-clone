@@ -13,7 +13,7 @@ const MessageSection = (props) => {
 
   useEffect(()=>{
     const connectChat = async ()=>{
-      const socket = new WebSocket("ws://"+ import.meta.env.VITE_HOST + "/socket-server/"+(props.group?props.receiver_id:props.user_id+props.receiver_id)+"/")
+      const socket = new WebSocket(import.meta.env.VITE_SOCKET_PROTOCOL+"://"+ import.meta.env.VITE_HOST + "/socket-server/"+(props.group?props.receiver_id:props.user_id+props.receiver_id)+"/")
       setChatsocket(socket)
     }
 
