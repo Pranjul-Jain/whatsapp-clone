@@ -31,7 +31,7 @@ DEBUG = bool(int(os.getenv("DJANGO_DEBUG")))
 if DEBUG:
     ALLOWED_HOSTS = []
 else:
-    ALLOWED_HOSTS = ["whatsapp-backend","127.0.0.1", "localhost"]
+    ALLOWED_HOSTS = ["whatsapp-backend",os.getenv("SERVER_HOST"), os.getenv("SERVER_PORT"),os.getenv("DOMAIN_NAME"),"www."+os.getenv("DOMAIN_NAME")]
 
 # Application definition
 
@@ -63,13 +63,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:8000",
-    "http://localhost",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1",
+    "https://"+os.getenv("SERVER_IP")+":8000",
+    "https://"+os.getenv("SERVER_IP"),
+    "https://"+os.getenv("SERVER_HOST")+":8000",
+    "https://"+os.getenv("SERVER_HOST"),
+    "https://"+os.getenv("DOMAIN_NAME")+":8000",
+    "https://"+os.getenv("DOMAIN_NAME"),
+    "https://www."+os.getenv("DOMAIN_NAME")+":8000",
+    "https://www."+os.getenv("DOMAIN_NAME"),
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -90,12 +94,14 @@ TIME_ZONE = 'Asia/Kolkata'
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1",
+    "https://"+os.getenv("SERVER_IP")+":8000",
+    "https://"+os.getenv("SERVER_IP"),
+    "https://"+os.getenv("SERVER_HOST")+":8000",
+    "https://"+os.getenv("SERVER_HOST"),
+    "https://"+os.getenv("DOMAIN_NAME")+":8000",
+    "https://"+os.getenv("DOMAIN_NAME"),
+    "https://www."+os.getenv("DOMAIN_NAME")+":8000",
+    "https://www."+os.getenv("DOMAIN_NAME"),
 ]
 
 ROOT_URLCONF = 'main.urls'

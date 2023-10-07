@@ -1,0 +1,1 @@
+certbot renew --nginx --post-hook "nginx -s reload"

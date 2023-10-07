@@ -18,3 +18,5 @@ media/*
 *.njsproj
 *.sln
 *.sw?
+
+*.pem
